@@ -9,7 +9,7 @@ import type {
 } from '../types/flow'
 import type { DashboardStats, FlowExecutionResponse, FlowPerformanceSummary } from '../types/execution'
 
-const API_BASE = '/api'
+const API_BASE = '/api/v1'
 
 export class ApiError extends Error {
   status: number
@@ -47,12 +47,21 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return parseResponse<T>(res)
 }
 
+function unwrapPage<T>(data: unknown): T[] {
+  if (data && typeof data === 'object' && 'content' in data && Array.isArray((data as { content: unknown }).content)) {
+    return (data as { content: T[] }).content
+  }
+  if (Array.isArray(data)) return data as T[]
+  return []
+}
+
 export async function createFlow(body: FlowCreateRequest): Promise<FlowResponse> {
   return request<FlowResponse>('/flows', { method: 'POST', body: JSON.stringify(body) })
 }
 
 export async function getFlows(): Promise<FlowResponse[]> {
-  return request<FlowResponse[]>('/flows')
+  const data = await request<unknown>('/flows')
+  return unwrapPage<FlowResponse>(data)
 }
 
 export async function getFlow(id: string): Promise<FlowResponse> {
@@ -88,10 +97,11 @@ export async function validateFlow(id: string, definition?: unknown): Promise<Fl
 
 export async function getExecutions(params?: { limit?: number; flowId?: string }): Promise<FlowExecutionResponse[]> {
   const q = new URLSearchParams()
-  if (params?.limit != null) q.set('limit', String(params.limit))
+  if (params?.limit != null) q.set('size', String(params.limit))
   if (params?.flowId) q.set('flowId', params.flowId)
   const qs = q.toString()
-  return request<FlowExecutionResponse[]>(`/executions${qs ? `?${qs}` : ''}`)
+  const data = await request<unknown>(`/executions${qs ? `?${qs}` : ''}`)
+  return unwrapPage<FlowExecutionResponse>(data)
 }
 
 export async function getExecution(id: string): Promise<FlowExecutionResponse> {
@@ -103,15 +113,16 @@ export async function cancelExecution(id: string): Promise<void> {
 }
 
 export async function getExecutionStats(): Promise<DashboardStats> {
-  return request<DashboardStats>('/stats/dashboard')
+  return request<DashboardStats>('/executions/stats')
 }
 
 export async function getFlowPerformance(): Promise<FlowPerformanceSummary[]> {
-  return request<FlowPerformanceSummary[]>('/stats/flows/performance')
+  return request<FlowPerformanceSummary[]>('/executions/stats').then((stats) => [stats] as unknown as FlowPerformanceSummary[])
 }
 
 export async function getCircuitBreakers(): Promise<CircuitBreakerStatus[]> {
-  return request<CircuitBreakerStatus[]>('/circuit-breakers')
+  const data = await request<unknown>('/circuit-breakers')
+  return unwrapPage<CircuitBreakerStatus>(data)
 }
 
 export async function resetCircuitBreaker(key: string): Promise<void> {
@@ -119,5 +130,5 @@ export async function resetCircuitBreaker(key: string): Promise<void> {
 }
 
 export async function getStepTypes(): Promise<{ value: StepType; label: string; description?: string }[]> {
-  return request(`/step-types`)
+  return request(`/step-templates`)
 }

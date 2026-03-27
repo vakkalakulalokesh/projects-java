@@ -116,7 +116,7 @@ export function FlowLibrary() {
             {f.version && <span className="flow-card-version">v{f.version}</span>}
             <p className="flow-card-desc">{f.description || 'No description'}</p>
             <div className="flow-card-stats">
-              <span>{f.totalRuns ?? 0} runs</span>
+              <span>{f.totalRuns ?? f.totalExecutions ?? 0} runs</span>
               <span>{((f.successRate ?? 0) * 100).toFixed(0)}% success</span>
               <span>{formatDuration(f.avgDurationMs)} avg</span>
             </div>

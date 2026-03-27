@@ -6,7 +6,7 @@ import { NgClass } from '@angular/common';
   standalone: true,
   imports: [NgClass],
   template: `
-    <span class="badge" [ngClass]="[variantClass, { pulse: pulse }]">{{ label }}</span>
+    <span class="badge" [ngClass]="variantClass" [class.pulse]="pulse">{{ label }}</span>
   `,
   styleUrl: './status-badge.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +32,9 @@ export class StatusBadgeComponent {
       FAILED: 'danger',
       CANCELLED: 'muted',
       TIMEOUT: 'warning',
+      TIMED_OUT: 'warning',
+      RETRYING: 'info',
+      DEAD_LETTERED: 'danger',
       ACTIVE: 'success',
       PAUSED: 'warning',
       DISABLED: 'muted',

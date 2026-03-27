@@ -15,6 +15,7 @@ export type StepExecutionStatus =
   | 'COMPENSATING'
 
 export interface StepExecutionResponse {
+  id?: string
   stepId: string
   stepName: string
   stepType: string
@@ -24,14 +25,16 @@ export interface StepExecutionResponse {
   startedAt?: string
   completedAt?: string
   durationMs?: number
-  input?: Record<string, unknown>
-  output?: Record<string, unknown>
+  inputData?: Record<string, unknown>
+  outputData?: Record<string, unknown>
+  error?: string
   errorMessage?: string
   compensation?: boolean
 }
 
 export interface FlowExecutionResponse {
   id: string
+  executionId?: string
   flowId: string
   flowName?: string
   correlationId?: string
@@ -39,9 +42,10 @@ export interface FlowExecutionResponse {
   startedAt: string
   completedAt?: string
   durationMs?: number
-  input?: Record<string, unknown>
-  output?: Record<string, unknown>
-  steps: StepExecutionResponse[]
+  inputData?: Record<string, unknown>
+  outputData?: Record<string, unknown>
+  stepExecutions?: StepExecutionResponse[]
+  createdAt?: string
 }
 
 export interface ExecutionTraceEvent {
@@ -54,9 +58,14 @@ export interface ExecutionTraceEvent {
 
 export interface DashboardStats {
   totalFlows: number
-  activeExecutions: number
+  activeFlows: number
+  totalExecutions: number
+  runningExecutions: number
+  completedToday: number
+  failedToday: number
   successRate: number
-  circuitBreakersOpen: number
+  avgDurationMs: number
+  circuitBreakers: { endpoint: string; state: string; failureCount: number }[]
 }
 
 export interface FlowPerformanceSummary {

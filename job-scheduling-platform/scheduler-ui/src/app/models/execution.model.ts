@@ -7,7 +7,10 @@ export type ExecutionStatus =
   | 'COMPLETED'
   | 'FAILED'
   | 'CANCELLED'
-  | 'TIMEOUT';
+  | 'TIMEOUT'
+  | 'TIMED_OUT'
+  | 'RETRYING'
+  | 'DEAD_LETTERED';
 
 export type ExecutionTrigger = 'SCHEDULED' | 'MANUAL' | 'RETRY' | 'API';
 

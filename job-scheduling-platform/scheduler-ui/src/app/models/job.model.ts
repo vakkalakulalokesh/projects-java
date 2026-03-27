@@ -42,10 +42,12 @@ export interface Job {
   timeoutSeconds: number;
   maxRetries: number;
   tags: string[];
-  typeConfig: Record<string, unknown>;
-  schedule?: string;
-  lastRunAt?: string;
-  successRate?: number;
+  configuration: Record<string, unknown>;
+  totalExecutions?: number;
+  successfulExecutions?: number;
+  failedExecutions?: number;
+  lastExecutedAt?: string;
+  nextRunAt?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -60,7 +62,7 @@ export interface JobCreateUpdatePayload {
   timeoutSeconds: number;
   maxRetries: number;
   tags: string[];
-  typeConfig: Record<string, unknown>;
+  configuration: Record<string, unknown>;
 }
 
 export interface DashboardStats {

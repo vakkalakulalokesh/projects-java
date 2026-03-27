@@ -5,8 +5,9 @@ export interface CircuitBreakerStatus {
   key?: string
   state: CircuitState
   failureCount: number
-  failureThreshold: number
+  failureThreshold?: number
   successCount: number
   lastFailureAt?: string
   lastSuccessAt?: string
+  nextRetryAt?: string
 }

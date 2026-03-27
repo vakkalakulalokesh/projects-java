@@ -1,25 +1,27 @@
+name: api-gateway
+
 services:
-  postgres:
+  gateway-postgres:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: gateway_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - gateway-pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d gateway_db"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  rabbitmq:
+  gateway-rabbitmq:
     image: rabbitmq:3.13-management-alpine
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5674:5672"
+      - "15674:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -29,10 +31,10 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
+  gateway-redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6381:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -46,16 +48,16 @@ services:
     ports:
       - "8082:8082"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gateway_db
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATASOURCE_URL: jdbc:postgresql://gateway-postgres:5432/gateway_db
+      SPRING_RABBITMQ_HOST: gateway-rabbitmq
+      SPRING_DATA_REDIS_HOST: gateway-redis
     depends_on:
-      postgres:
+      gateway-postgres:
         condition: service_healthy
-      rabbitmq:
+      gateway-rabbitmq:
         condition: service_healthy
-      redis:
+      gateway-redis:
         condition: service_healthy
 
 volumes:
-  pgdata:
+  gateway-pgdata:

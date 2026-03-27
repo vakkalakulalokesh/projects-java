@@ -60,8 +60,8 @@
             <app-status-badge [status]="job.status" />
           </td>
           <td><code class="cron">{{ job.cronExpression }}</code></td>
-          <td class="muted">{{ job.lastRunAt | timeAgo: timeTick() }}</td>
-          <td>{{ job.successRate != null ? (job.successRate | number: '1.0-0') + '%' : '—' }}</td>
+          <td class="muted">{{ job.lastExecutedAt | timeAgo: timeTick() }}</td>
+          <td>{{ job.totalExecutions ? ((job.successfulExecutions ?? 0) * 100 / job.totalExecutions | number: '1.0-0') + '%' : '—' }}</td>
           <td class="actions-cell" (click)="$event.stopPropagation()">
             <div class="menu-wrap">
               <button type="button" class="btn btn-ghost btn-sm menu-btn" (click)="toggleMenu(job.id, $event)">⋯</button>

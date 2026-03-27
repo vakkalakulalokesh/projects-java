@@ -103,9 +103,13 @@ export interface FlowCreateRequest {
 
 export interface FlowResponse extends FlowDefinition {
   id: string
+  flowDefinition?: FlowDefinition
+  inputSchema?: Record<string, unknown>
+  createdBy?: string
   createdAt?: string
   updatedAt?: string
   totalRuns?: number
+  totalExecutions?: number
   successRate?: number
   avgDurationMs?: number
 }

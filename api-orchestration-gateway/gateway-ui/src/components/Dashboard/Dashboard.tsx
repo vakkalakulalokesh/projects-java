@@ -14,9 +14,14 @@ import './Dashboard.css'
 
 const emptyStats: DashboardStats = {
   totalFlows: 0,
-  activeExecutions: 0,
+  activeFlows: 0,
+  totalExecutions: 0,
+  runningExecutions: 0,
+  completedToday: 0,
+  failedToday: 0,
   successRate: 0,
-  circuitBreakersOpen: 0,
+  avgDurationMs: 0,
+  circuitBreakers: [],
 }
 
 export function Dashboard() {
@@ -36,10 +41,10 @@ export function Dashboard() {
         getFlowPerformance().catch(() => []),
         getCircuitBreakers().catch(() => []),
       ])
-      setStats(s)
-      setExecutions(ex)
-      setPerformance(perf.slice(0, 6))
-      setBreakers(cb)
+      setStats(s ?? emptyStats)
+      setExecutions(Array.isArray(ex) ? ex : [])
+      setPerformance(Array.isArray(perf) ? perf.slice(0, 6) : [])
+      setBreakers(Array.isArray(cb) ? cb : [])
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load dashboard')
     } finally {
@@ -66,16 +71,16 @@ export function Dashboard() {
           <span className="dashboard-stat-value">{stats.totalFlows}</span>
         </div>
         <div className="dashboard-stat card">
-          <span className="dashboard-stat-label">Active executions</span>
-          <span className="dashboard-stat-value">{stats.activeExecutions}</span>
+          <span className="dashboard-stat-label">Running executions</span>
+          <span className="dashboard-stat-value">{stats.runningExecutions}</span>
         </div>
         <div className="dashboard-stat card">
           <span className="dashboard-stat-label">Success rate</span>
-          <span className="dashboard-stat-value">{`${(stats.successRate * 100).toFixed(1)}%`}</span>
+          <span className="dashboard-stat-value">{`${((stats.successRate ?? 0) * 100).toFixed(1)}%`}</span>
         </div>
         <div className="dashboard-stat card">
           <span className="dashboard-stat-label">Circuits open</span>
-          <span className="dashboard-stat-value dashboard-stat-value--alert">{openBreakers || stats.circuitBreakersOpen}</span>
+          <span className="dashboard-stat-value dashboard-stat-value--alert">{openBreakers || (stats.circuitBreakers?.filter(b => b.state === 'OPEN').length ?? 0)}</span>
         </div>
       </div>
 
@@ -106,12 +111,12 @@ export function Dashboard() {
                   </tr>
                 )}
                 {executions.map((ex) => (
-                  <tr key={ex.id}>
+                  <tr key={ex.executionId ?? ex.id}>
                     <td>
-                      <Link to={`/executions/${ex.id}`} className="dashboard-flow-link">
+                      <Link to={`/executions/${ex.executionId ?? ex.id}`} className="dashboard-flow-link">
                         {ex.flowName ?? ex.flowId}
                       </Link>
-                      <div className="dashboard-sub">{ex.id}</div>
+                      <div className="dashboard-sub">{ex.executionId ?? ex.id}</div>
                     </td>
                     <td>
                       <StatusBadge status={ex.status} size="sm" />

@@ -1,12 +1,14 @@
+name: job-scheduler
+
 services:
-  postgres:
+  scheduler-postgres:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: scheduler_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d scheduler_db"]
       interval: 5s
@@ -14,11 +16,11 @@ services:
       retries: 10
       start_period: 10s
 
-  rabbitmq:
+  scheduler-rabbitmq:
     image: rabbitmq:3.13-management-alpine
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5672"
+      - "15673:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -26,10 +28,10 @@ services:
       retries: 8
       start_period: 20s
 
-  redis:
+  scheduler-redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6380:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -40,10 +42,14 @@ services:
     build: .
     ports:
       - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://scheduler-postgres:5432/scheduler_db
+      SPRING_RABBITMQ_HOST: scheduler-rabbitmq
+      SPRING_DATA_REDIS_HOST: scheduler-redis
     depends_on:
-      postgres:
+      scheduler-postgres:
         condition: service_healthy
-      rabbitmq:
+      scheduler-rabbitmq:
         condition: service_healthy
-      redis:
+      scheduler-redis:
         condition: service_healthy

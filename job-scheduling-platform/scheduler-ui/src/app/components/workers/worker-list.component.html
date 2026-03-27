@@ -6,11 +6,11 @@
 </div>
 
 <div class="worker-grid">
-  @for (w of workers(); track w.id) {
+  @for (w of workers(); track w.workerId) {
     <article class="card worker-card">
       <div class="card-body">
         <div class="row-top">
-          <span class="wid mono">{{ w.id }}</span>
+          <span class="wid mono">{{ w.workerId }}</span>
           <app-status-badge [status]="w.status" />
         </div>
         <p class="host">{{ w.hostname }}</p>
@@ -24,7 +24,7 @@
         </div>
         <p class="meta">
           Uptime:
-          {{ w.uptimeSeconds != null ? (w.uptimeSeconds / 3600 | number: '1.0-1') + 'h' : '—' }}
+          {{ w.uptime != null ? (w.uptime / 3600000 | number: '1.0-1') + 'h' : '—' }}
           · Last heartbeat {{ w.lastHeartbeatAt | timeAgo: timeTick() }}
         </p>
       </div>

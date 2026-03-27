@@ -6,7 +6,7 @@
           <div class="stat-top">
             <span class="stat-icon jobs">📋</span>
             @if (s.activeJobsTrend !== undefined) {
-              <span class="trend" [class.up]="(s.activeJobsTrend ?? 0) >= 0">{{ trendText(s.activeJobsTrend) }}</span>
+              <span class="trend" [class.up]="s.activeJobsTrend >= 0">{{ trendText(s.activeJobsTrend) }}</span>
             }
           </div>
           <p class="stat-value">{{ s.activeJobs }}</p>
@@ -18,7 +18,7 @@
           <div class="stat-top">
             <span class="stat-icon run">⚡</span>
             @if (s.runningExecutionsTrend !== undefined) {
-              <span class="trend" [class.up]="(s.runningExecutionsTrend ?? 0) >= 0">{{ trendText(s.runningExecutionsTrend) }}</span>
+              <span class="trend" [class.up]="s.runningExecutionsTrend >= 0">{{ trendText(s.runningExecutionsTrend) }}</span>
             }
           </div>
           <p class="stat-value">{{ s.runningExecutions }}</p>
@@ -30,7 +30,7 @@
           <div class="stat-top">
             <span class="stat-icon rate">✓</span>
             @if (s.todaySuccessRateTrend !== undefined) {
-              <span class="trend" [class.up]="(s.todaySuccessRateTrend ?? 0) >= 0">{{ trendText(s.todaySuccessRateTrend) }}</span>
+              <span class="trend" [class.up]="s.todaySuccessRateTrend >= 0">{{ trendText(s.todaySuccessRateTrend) }}</span>
             }
           </div>
           <p class="stat-value">{{ s.todaySuccessRate | number: '1.0-1' }}%</p>
@@ -42,7 +42,7 @@
           <div class="stat-top">
             <span class="stat-icon workers">◎</span>
             @if (s.activeWorkersTrend !== undefined) {
-              <span class="trend" [class.up]="(s.activeWorkersTrend ?? 0) >= 0">{{ trendText(s.activeWorkersTrend) }}</span>
+              <span class="trend" [class.up]="s.activeWorkersTrend >= 0">{{ trendText(s.activeWorkersTrend) }}</span>
             }
           </div>
           <p class="stat-value">{{ s.activeWorkers }}</p>
@@ -113,10 +113,10 @@
         <a routerLink="/workers" class="link-all">Manage workers</a>
       </div>
       <div class="worker-grid">
-        @for (w of workers(); track w.id) {
+        @for (w of workers(); track w.workerId) {
           <article class="worker-card">
             <div class="worker-head">
-              <span class="worker-id">{{ w.id }}</span>
+              <span class="worker-id">{{ w.workerId }}</span>
               <app-status-badge [status]="w.status" />
             </div>
             <p class="hostname">{{ w.hostname }}</p>
@@ -129,7 +129,7 @@
               </div>
             </div>
             <p class="meta">
-              Uptime: {{ w.uptimeSeconds != null ? (w.uptimeSeconds / 3600 | number: '1.0-1') + 'h' : '—' }} · Heartbeat
+              Uptime: {{ w.uptime != null ? (w.uptime / 3600000 | number: '1.0-1') + 'h' : '—' }} · Heartbeat
               {{ w.lastHeartbeatAt | timeAgo: timeTick() }}
             </p>
           </article>

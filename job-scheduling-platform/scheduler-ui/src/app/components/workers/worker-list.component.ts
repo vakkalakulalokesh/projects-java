@@ -8,6 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DecimalPipe } from '@angular/common';
 import { merge, switchMap, timer } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { TenantService } from '../../services/tenant.service';

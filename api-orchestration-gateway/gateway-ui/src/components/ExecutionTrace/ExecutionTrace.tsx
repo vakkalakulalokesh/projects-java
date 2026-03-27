@@ -12,7 +12,7 @@ function mergeExecution(prev: FlowExecutionResponse, patch: Partial<FlowExecutio
   return {
     ...prev,
     ...patch,
-    steps: patch.steps ?? prev.steps,
+    stepExecutions: patch.stepExecutions ?? prev.stepExecutions,
   }
 }
 
@@ -69,7 +69,7 @@ export function ExecutionTrace() {
         const body = JSON.parse(msg.body) as Partial<FlowExecutionResponse> & { executionId?: string }
         setExecution((prev) => {
           if (!prev) return prev
-          if (body.executionId && body.executionId !== prev.id) return prev
+          if (body.executionId && body.executionId !== (prev.executionId ?? prev.id)) return prev
           return mergeExecution(prev, body)
         })
       } catch {
@@ -101,17 +101,17 @@ export function ExecutionTrace() {
             </thead>
             <tbody>
               {list.map((ex) => (
-                <tr key={ex.id}>
+                <tr key={ex.executionId ?? ex.id}>
                   <td>
                     <div className="execution-list-name">{ex.flowName ?? ex.flowId}</div>
-                    <div className="execution-list-id u-text-secondary">{ex.id}</div>
+                    <div className="execution-list-id u-text-secondary">{ex.executionId ?? ex.id}</div>
                   </td>
                   <td>
                     <StatusBadge status={ex.status} size="sm" />
                   </td>
                   <td>{formatTimeAgo(ex.startedAt)}</td>
                   <td>
-                    <Link to={`/executions/${ex.id}`} className="btn btn-sm btn-primary">
+                    <Link to={`/executions/${ex.executionId ?? ex.id}`} className="btn btn-sm btn-primary">
                       Open
                     </Link>
                   </td>
@@ -151,7 +151,7 @@ export function ExecutionTrace() {
               ← Executions
             </Link>
             <h2 className="execution-trace-flow">{execution.flowName ?? execution.flowId}</h2>
-            <p className="execution-trace-id u-text-secondary">Execution {execution.id}</p>
+            <p className="execution-trace-id u-text-secondary">Execution {execution.executionId ?? execution.id}</p>
           </div>
           <StatusBadge status={execution.status} />
         </div>
@@ -176,11 +176,11 @@ export function ExecutionTrace() {
           <div className="execution-trace-io-grid">
             <div>
               <span className="execution-trace-io-label">Input</span>
-              <pre className="execution-trace-pre">{formatJSON(execution.input ?? {})}</pre>
+              <pre className="execution-trace-pre">{formatJSON(execution.inputData ?? {})}</pre>
             </div>
             <div>
               <span className="execution-trace-io-label">Output</span>
-              <pre className="execution-trace-pre">{formatJSON(execution.output ?? {})}</pre>
+              <pre className="execution-trace-pre">{formatJSON(execution.outputData ?? {})}</pre>
             </div>
           </div>
         )}
@@ -188,7 +188,7 @@ export function ExecutionTrace() {
 
       <section className="execution-trace-timeline card">
         <h3 className="execution-trace-section-title">Step timeline</h3>
-        <StepTimeline steps={execution.steps} />
+        <StepTimeline steps={execution.stepExecutions ?? []} />
       </section>
     </div>
   )

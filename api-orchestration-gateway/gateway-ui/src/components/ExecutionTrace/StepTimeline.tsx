@@ -71,11 +71,11 @@ export function StepTimeline({ steps }: StepTimelineProps) {
                   <div className="step-timeline-json">
                     <div>
                       <span className="step-timeline-json-label">Input</span>
-                      <pre>{formatJSON(step.input ?? {})}</pre>
+                      <pre>{formatJSON(step.inputData ?? {})}</pre>
                     </div>
                     <div>
                       <span className="step-timeline-json-label">Output</span>
-                      <pre>{formatJSON(step.output ?? {})}</pre>
+                      <pre>{formatJSON(step.outputData ?? {})}</pre>
                     </div>
                   </div>
                 )}

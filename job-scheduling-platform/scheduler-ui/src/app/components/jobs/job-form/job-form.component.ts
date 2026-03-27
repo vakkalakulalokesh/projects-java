@@ -19,7 +19,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, TitleCasePipe } from '@angular/common';
 import { switchMap } from 'rxjs';
-import { JobType, JobPriority, JobStatus } from '../../../models/job.model';
+import { JobType, JobPriority, JobStatus, JobCreateUpdatePayload } from '../../../models/job.model';
 import { ApiService } from '../../../services/api.service';
 import { TenantService } from '../../../services/tenant.service';
 
@@ -92,7 +92,7 @@ export class JobFormComponent implements OnInit {
             });
             this.tagsArray.clear();
             (job.tags ?? []).forEach((t) => this.tagsArray.push(this.fb.nonNullable.control(t)));
-            this.patchTypeConfig(job.jobType, job.typeConfig ?? {});
+            this.patchTypeConfig(job.jobType, job.configuration ?? {});
             this.cdr.markForCheck();
           },
           error: () => {},
@@ -250,17 +250,17 @@ export class JobFormComponent implements OnInit {
     }
     this.saving.set(true);
     const v = this.form.getRawValue();
-    const payload = {
-      name: v.name,
+    const payload: JobCreateUpdatePayload = {
+      name: v.name ?? '',
       description: v.description || undefined,
       jobType: v.jobType,
       status: v.status,
       priority: v.priority,
-      cronExpression: v.cronExpression,
+      cronExpression: v.cronExpression ?? '',
       timeoutSeconds: Number(v.timeoutSeconds),
       maxRetries: Number(v.maxRetries),
       tags: this.tagsArray.controls.map((c) => c.value as string),
-      typeConfig: this.buildTypeConfig(),
+      configuration: this.buildTypeConfig(),
     };
     const jobId = this.id();
     const req = jobId ? this.api.updateJob(jobId, payload) : this.api.createJob(payload);

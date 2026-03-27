@@ -129,11 +129,11 @@
             <div class="field">
               <label class="form-label">Headers</label>
               <div formArrayName="httpHeaders">
-                @for (_h of headerRows.controls; track $index; let i = $index) {
-                  <div [formGroupName]="i" class="kv-row">
+                @for (_h of headerRows.controls; track $index) {
+                  <div [formGroupName]="$index" class="kv-row">
                     <input class="form-input" placeholder="Key" formControlName="key" />
                     <input class="form-input" placeholder="Value" formControlName="value" />
-                    <button type="button" class="btn btn-ghost btn-sm" (click)="removeHeaderRow(i)">Remove</button>
+                    <button type="button" class="btn btn-ghost btn-sm" (click)="removeHeaderRow($index)">Remove</button>
                   </div>
                 }
               </div>
