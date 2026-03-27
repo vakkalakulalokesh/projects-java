@@ -1,0 +1,142 @@
+<section class="dashboard">
+  <div class="grid grid-4 stat-row">
+    @if (stats(); as s) {
+      <article class="card stat-card">
+        <div class="card-body">
+          <div class="stat-top">
+            <span class="stat-icon jobs">📋</span>
+            @if (s.activeJobsTrend !== undefined) {
+              <span class="trend" [class.up]="(s.activeJobsTrend ?? 0) >= 0">{{ trendText(s.activeJobsTrend) }}</span>
+            }
+          </div>
+          <p class="stat-value">{{ s.activeJobs }}</p>
+          <p class="stat-label">Active jobs</p>
+        </div>
+      </article>
+      <article class="card stat-card">
+        <div class="card-body">
+          <div class="stat-top">
+            <span class="stat-icon run">⚡</span>
+            @if (s.runningExecutionsTrend !== undefined) {
+              <span class="trend" [class.up]="(s.runningExecutionsTrend ?? 0) >= 0">{{ trendText(s.runningExecutionsTrend) }}</span>
+            }
+          </div>
+          <p class="stat-value">{{ s.runningExecutions }}</p>
+          <p class="stat-label">Running executions</p>
+        </div>
+      </article>
+      <article class="card stat-card">
+        <div class="card-body">
+          <div class="stat-top">
+            <span class="stat-icon rate">✓</span>
+            @if (s.todaySuccessRateTrend !== undefined) {
+              <span class="trend" [class.up]="(s.todaySuccessRateTrend ?? 0) >= 0">{{ trendText(s.todaySuccessRateTrend) }}</span>
+            }
+          </div>
+          <p class="stat-value">{{ s.todaySuccessRate | number: '1.0-1' }}%</p>
+          <p class="stat-label">Today's success rate</p>
+        </div>
+      </article>
+      <article class="card stat-card">
+        <div class="card-body">
+          <div class="stat-top">
+            <span class="stat-icon workers">◎</span>
+            @if (s.activeWorkersTrend !== undefined) {
+              <span class="trend" [class.up]="(s.activeWorkersTrend ?? 0) >= 0">{{ trendText(s.activeWorkersTrend) }}</span>
+            }
+          </div>
+          <p class="stat-value">{{ s.activeWorkers }}</p>
+          <p class="stat-label">Active workers</p>
+        </div>
+      </article>
+    }
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-body">
+        <div class="section-head">
+          <h2>Recent executions</h2>
+          <a routerLink="/executions" class="link-all">View all</a>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Job</th>
+                <th>Status</th>
+                <th>Started</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of recent(); track row.id) {
+                <tr [routerLink]="['/executions', row.id]">
+                  <td>{{ row.jobName }}</td>
+                  <td><app-status-badge [status]="row.status" /></td>
+                  <td class="muted">{{ row.startedAt | timeAgo: timeTick() }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3" class="empty">No executions yet</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h2>Hourly volume</h2>
+        <p class="chart-sub">Last 12 hours</p>
+        <div class="bar-chart">
+          @for (b of hourly(); track b.hour) {
+            <div class="bar-wrap">
+              <div
+                class="bar"
+                [style.height.%]="(b.count / maxHourly()) * 100"
+                [title]="b.count + ' @ ' + b.hour"
+              ></div>
+              <span class="bar-label">{{ b.hour }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card workers-section">
+    <div class="card-body">
+      <div class="section-head">
+        <h2>Worker health</h2>
+        <a routerLink="/workers" class="link-all">Manage workers</a>
+      </div>
+      <div class="worker-grid">
+        @for (w of workers(); track w.id) {
+          <article class="worker-card">
+            <div class="worker-head">
+              <span class="worker-id">{{ w.id }}</span>
+              <app-status-badge [status]="w.status" />
+            </div>
+            <p class="hostname">{{ w.hostname }}</p>
+            <div class="progress-wrap">
+              <div class="progress-label">
+                Load {{ w.activeExecutions }} / {{ w.maxConcurrency }}
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" [style.width.%]="loadPercent(w)"></div>
+              </div>
+            </div>
+            <p class="meta">
+              Uptime: {{ w.uptimeSeconds != null ? (w.uptimeSeconds / 3600 | number: '1.0-1') + 'h' : '—' }} · Heartbeat
+              {{ w.lastHeartbeatAt | timeAgo: timeTick() }}
+            </p>
+          </article>
+        } @empty {
+          <p class="empty">No workers registered</p>
+        }
+      </div>
+    </div>
+  </div>
+</section>

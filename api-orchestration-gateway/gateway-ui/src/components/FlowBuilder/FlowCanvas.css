@@ -1,0 +1,25 @@
+.flow-canvas-wrap {
+  flex: 1;
+  min-height: 420px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.flow-canvas-wrap .react-flow__attribution {
+  display: none;
+}
+
+.flow-controls {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.flow-minimap {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}

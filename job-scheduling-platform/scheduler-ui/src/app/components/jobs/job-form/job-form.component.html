@@ -1,0 +1,179 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="job-form" novalidate>
+  <div class="page-head">
+    <div>
+      <h1>{{ id() ? 'Edit job' : 'Create job' }}</h1>
+      <p class="sub">Define how and when this job runs for the current tenant.</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn btn-ghost" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : 'Save job' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="grid-form">
+    <section class="card">
+      <div class="card-body">
+        <h2>Basics</h2>
+        <div class="field">
+          <label class="form-label" for="name">Name</label>
+          <input id="name" class="form-input" formControlName="name" autocomplete="off" />
+          @if (form.controls.name.touched && form.controls.name.errors?.['required']) {
+            <p class="form-error">Name is required</p>
+          }
+        </div>
+        <div class="field">
+          <label class="form-label" for="desc">Description</label>
+          <textarea id="desc" class="form-textarea" formControlName="description" rows="3"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="form-label">Status</label>
+            <select class="form-select" formControlName="status">
+              <option value="ACTIVE">Active</option>
+              <option value="PAUSED">Paused</option>
+              <option value="DISABLED">Disabled</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="form-label" for="cron">Cron expression</label>
+            <input id="cron" class="form-input mono" formControlName="cronExpression" />
+            <p class="cron-hint">{{ cronPreview() }}</p>
+            @if (form.controls.cronExpression.touched && form.controls.cronExpression.errors?.['required']) {
+              <p class="form-error">Cron is required</p>
+            }
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="form-label">Priority</label>
+            <div class="priority-cards">
+              @for (p of priorities; track p) {
+                <button
+                  type="button"
+                  class="pri-card"
+                  [class.active]="form.controls.priority.value === p"
+                  [ngClass]="'pri-' + p.toLowerCase()"
+                  (click)="form.patchValue({ priority: p })"
+                >
+                  {{ p | titlecase }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="form-label" for="to">Timeout (seconds)</label>
+            <input id="to" class="form-input" type="number" formControlName="timeoutSeconds" />
+          </div>
+          <div class="field">
+            <label class="form-label" for="mr">Max retries</label>
+            <input id="mr" class="form-input" type="number" formControlName="maxRetries" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="form-label" for="tag">Tags</label>
+          <div class="chip-row">
+            @for (c of tagsArray.controls; track $index) {
+              <span class="chip">{{ c.value }}<button type="button" (click)="removeTag($index)" aria-label="Remove">×</button></span>
+            }
+            <input
+              #tagInput
+              id="tag"
+              class="form-input chip-input"
+              placeholder="Add tag, press Enter"
+              (keydown.enter)="$event.preventDefault(); addTag(tagInput)"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-body">
+        <h2>Job type</h2>
+        <div class="type-cards">
+          @for (t of jobTypes; track t) {
+            <button
+              type="button"
+              class="type-card"
+              [class.active]="form.controls.jobType.value === t"
+              (click)="selectType(t)"
+            >
+              <span class="type-icon">{{ t === 'HTTP' ? '⬡' : t === 'SHELL_SCRIPT' ? '⌘' : t === 'SQL_QUERY' ? '§' : '🐍' }}</span>
+              <span class="type-name">{{ formatTypeName(t) | titlecase }}</span>
+              <span class="type-desc">{{ typeBlurb(t) }}</span>
+            </button>
+          }
+        </div>
+
+        @if (form.controls.jobType.value === 'HTTP') {
+          <div class="type-section">
+            <h3>HTTP</h3>
+            <div class="field">
+              <label class="form-label" for="url">URL</label>
+              <input id="url" class="form-input mono" formControlName="httpUrl" />
+            </div>
+            <div class="field">
+              <label class="form-label" for="method">Method</label>
+              <select id="method" class="form-select" formControlName="httpMethod">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="PATCH">PATCH</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="form-label">Headers</label>
+              <div formArrayName="httpHeaders">
+                @for (_h of headerRows.controls; track $index; let i = $index) {
+                  <div [formGroupName]="i" class="kv-row">
+                    <input class="form-input" placeholder="Key" formControlName="key" />
+                    <input class="form-input" placeholder="Value" formControlName="value" />
+                    <button type="button" class="btn btn-ghost btn-sm" (click)="removeHeaderRow(i)">Remove</button>
+                  </div>
+                }
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" (click)="addHeaderRow()">Add header</button>
+            </div>
+            <div class="field">
+              <label class="form-label" for="body">Body</label>
+              <textarea id="body" class="form-textarea mono" formControlName="httpBody" rows="6"></textarea>
+            </div>
+          </div>
+        }
+
+        @if (form.controls.jobType.value === 'SHELL_SCRIPT') {
+          <div class="type-section">
+            <h3>Shell script</h3>
+            <textarea class="form-textarea mono script" formControlName="shellScript" rows="14" placeholder="#!/usr/bin/env bash"></textarea>
+          </div>
+        }
+
+        @if (form.controls.jobType.value === 'SQL_QUERY') {
+          <div class="type-section">
+            <h3>SQL</h3>
+            <div class="field">
+              <label class="form-label" for="conn">Connection string</label>
+              <input id="conn" class="form-input mono" formControlName="sqlConnection" />
+            </div>
+            <div class="field">
+              <label class="form-label" for="q">Query</label>
+              <textarea id="q" class="form-textarea mono" formControlName="sqlQuery" rows="10"></textarea>
+            </div>
+          </div>
+        }
+
+        @if (form.controls.jobType.value === 'PYTHON_SCRIPT') {
+          <div class="type-section">
+            <h3>Python</h3>
+            <textarea class="form-textarea mono script" formControlName="pythonScript" rows="14" placeholder="# python"></textarea>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</form>

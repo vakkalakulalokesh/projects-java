@@ -1,0 +1,79 @@
+.page-head {
+  margin-bottom: 1.25rem;
+}
+
+.page-head h1 {
+  margin: 0 0 0.25rem;
+}
+
+.sub {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.worker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.worker-card .card-body {
+  padding: 1.15rem 1.25rem;
+}
+
+.row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.wid {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.host {
+  margin: 0 0 0.85rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.progress-wrap {
+  margin-bottom: 0.65rem;
+}
+
+.progress-label {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), #8b5cf6);
+  transition: width 0.25s ease;
+}
+
+.meta {
+  margin: 0;
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}

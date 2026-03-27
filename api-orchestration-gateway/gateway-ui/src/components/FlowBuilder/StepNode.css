@@ -1,0 +1,123 @@
+.step-node {
+  min-width: 200px;
+  max-width: 260px;
+  border-radius: var(--radius);
+  border: 2px solid #cbd5e1;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.step-node--selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-muted), var(--shadow-md);
+}
+
+.step-node-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.step-node-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.step-node-diamond {
+  display: inline-block;
+  transform: rotate(0deg);
+  font-size: 18px;
+}
+
+.step-node-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.step-node-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.step-node-type {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.step-node-handle {
+  width: 10px !important;
+  height: 10px !important;
+  background: #64748b !important;
+  border: 2px solid #fff !important;
+}
+
+.step-node--http {
+  border-color: #3b82f6;
+}
+
+.step-node--http .step-node-icon {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+.step-node--transform {
+  border-color: #a855f7;
+}
+
+.step-node--transform .step-node-icon {
+  background: rgba(168, 85, 247, 0.12);
+  color: #7e22ce;
+}
+
+.step-node--condition {
+  border-color: #f97316;
+}
+
+.step-node--condition .step-node-icon {
+  background: rgba(249, 115, 22, 0.12);
+  color: #c2410c;
+}
+
+.step-node--delay {
+  border-color: #94a3b8;
+}
+
+.step-node--delay .step-node-icon {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.step-node--aggregate {
+  border-color: #22c55e;
+}
+
+.step-node--aggregate .step-node-icon {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
+.step-node--script {
+  border-color: #14b8a6;
+}
+
+.step-node--script .step-node-icon {
+  background: rgba(20, 184, 166, 0.12);
+  color: #0f766e;
+}

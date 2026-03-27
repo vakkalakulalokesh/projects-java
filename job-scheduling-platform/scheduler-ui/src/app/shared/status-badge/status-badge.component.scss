@@ -1,0 +1,46 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  line-height: 1.2;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.muted {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.info {
+  background: var(--info-muted);
+  color: #1d4ed8;
+}
+
+.running {
+  background: var(--info-muted);
+  color: #1d4ed8;
+}
+
+.success {
+  background: var(--success-muted);
+  color: #047857;
+}
+
+.warning {
+  background: var(--warning-muted);
+  color: #b45309;
+}
+
+.danger {
+  background: var(--danger-muted);
+  color: #b91c1c;
+}
+
+.pulse {
+  animation: pulse-running 1.4s ease-in-out infinite;
+}

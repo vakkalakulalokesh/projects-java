@@ -1,0 +1,35 @@
+<div class="page-head">
+  <div>
+    <h1>Workers</h1>
+    <p class="sub">Capacity and heartbeat across your fleet.</p>
+  </div>
+</div>
+
+<div class="worker-grid">
+  @for (w of workers(); track w.id) {
+    <article class="card worker-card">
+      <div class="card-body">
+        <div class="row-top">
+          <span class="wid mono">{{ w.id }}</span>
+          <app-status-badge [status]="w.status" />
+        </div>
+        <p class="host">{{ w.hostname }}</p>
+        <div class="progress-wrap">
+          <div class="progress-label">
+            Active {{ w.activeExecutions }} / {{ w.maxConcurrency }}
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="loadPercent(w)"></div>
+          </div>
+        </div>
+        <p class="meta">
+          Uptime:
+          {{ w.uptimeSeconds != null ? (w.uptimeSeconds / 3600 | number: '1.0-1') + 'h' : '—' }}
+          · Last heartbeat {{ w.lastHeartbeatAt | timeAgo: timeTick() }}
+        </p>
+      </div>
+    </article>
+  } @empty {
+    <p class="empty">No workers connected.</p>
+  }
+</div>

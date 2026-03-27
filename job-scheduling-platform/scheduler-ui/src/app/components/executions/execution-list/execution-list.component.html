@@ -1,0 +1,74 @@
+<div class="page-head">
+  <div>
+    <h1>Executions</h1>
+    <p class="sub">Live status across jobs and workers.</p>
+  </div>
+</div>
+
+<div class="filters card">
+  <div class="card-body filters-inner">
+    <div class="field">
+      <label class="form-label" for="jobf">Job</label>
+      <input id="jobf" class="form-input" placeholder="Filter by job name" [ngModel]="jobFilter()" (ngModelChange)="jobFilter.set($event)" />
+    </div>
+    <div class="field">
+      <label class="form-label" for="stf">Status</label>
+      <select id="stf" class="form-select" [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+        <option value="">All</option>
+        <option value="PENDING">Pending</option>
+        <option value="QUEUED">Queued</option>
+        <option value="RUNNING">Running</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="FAILED">Failed</option>
+        <option value="CANCELLED">Cancelled</option>
+        <option value="TIMEOUT">Timeout</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="form-label" for="from">From</label>
+      <input id="from" type="date" class="form-input" [ngModel]="fromDate()" (ngModelChange)="fromDate.set($event)" />
+    </div>
+    <div class="field">
+      <label class="form-label" for="to">To</label>
+      <input id="to" type="date" class="form-input" [ngModel]="toDate()" (ngModelChange)="toDate.set($event)" />
+    </div>
+    <button type="button" class="btn btn-primary btn-sm apply-btn" (click)="applyDateFilters()">Apply range</button>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Job</th>
+        <th>Execution ID</th>
+        <th>Status</th>
+        <th>Trigger</th>
+        <th>Priority</th>
+        <th>Started</th>
+        <th>Duration</th>
+        <th>Worker</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of filtered(); track row.id) {
+        <tr (click)="rowClick(row.id)">
+          <td>{{ row.jobName }}</td>
+          <td><code class="id">{{ row.id }}</code></td>
+          <td><app-status-badge [status]="row.status" /></td>
+          <td>{{ row.triggerType }}</td>
+          <td>{{ row.priority }}</td>
+          <td class="muted">{{ row.startedAt | timeAgo: timeTick() }}</td>
+          <td>{{ formatDuration(row.durationMs) }}</td>
+          <td class="muted">{{ row.workerId ?? '—' }}</td>
+          <td><a class="link" [routerLink]="['/executions', row.id]" (click)="$event.stopPropagation()">Open</a></td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="9" class="empty">No executions found.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

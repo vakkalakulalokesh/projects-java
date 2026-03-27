@@ -1,0 +1,73 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.status-badge--sm {
+  font-size: 11px;
+  padding: 2px 8px;
+}
+
+.status-badge--md {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.status-pending {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.status-running {
+  background: rgba(99, 102, 241, 0.15);
+  color: #4338ca;
+}
+
+.status-completed,
+.status-closed,
+.status-active {
+  background: rgba(34, 197, 94, 0.15);
+  color: #15803d;
+}
+
+.status-failed,
+.status-open {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+}
+
+.status-cancelled,
+.status-skipped {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.status-compensating {
+  background: rgba(234, 179, 8, 0.18);
+  color: #a16207;
+}
+
+.status-draft {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.status-disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.status-half-open {
+  background: rgba(234, 179, 8, 0.2);
+  color: #854d0e;
+}
+
+.status-default {
+  background: #e2e8f0;
+  color: #334155;
+}

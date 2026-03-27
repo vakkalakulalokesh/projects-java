@@ -1,0 +1,172 @@
+.flow-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: calc(100vh - 120px);
+  min-height: 560px;
+}
+
+.flow-builder-loading {
+  padding: 48px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.flow-builder-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.flow-builder-name {
+  flex: 1 1 200px;
+  max-width: 320px;
+}
+
+.flow-builder-desc {
+  flex: 2 1 240px;
+  min-width: 200px;
+}
+
+.flow-builder-toolbar-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.flow-builder-status {
+  font-size: 13px;
+  color: var(--text-secondary);
+  width: 100%;
+}
+
+.flow-builder-body {
+  display: flex;
+  flex: 1;
+  gap: 16px;
+  min-height: 0;
+}
+
+.flow-palette {
+  width: 200px;
+  flex-shrink: 0;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.flow-palette-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.flow-palette-hint {
+  margin: 0;
+  font-size: 11px;
+}
+
+.flow-palette-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.flow-palette-item {
+  padding: 10px 12px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  cursor: grab;
+  background: var(--surface-muted);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.flow-palette-item:hover {
+  border-color: var(--primary);
+  background: var(--primary-muted);
+}
+
+.flow-palette-item:active {
+  cursor: grabbing;
+}
+
+.flow-palette-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+.flow-builder-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.flow-builder-center .flow-canvas-wrap {
+  flex: 1;
+  min-height: 360px;
+}
+
+.flow-validation {
+  padding: 12px 14px;
+  max-height: 140px;
+  overflow: auto;
+}
+
+.flow-validation-head {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.flow-validation-empty {
+  margin: 0;
+  font-size: 13px;
+}
+
+.flow-validation-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+@media (max-width: 1100px) {
+  .flow-builder-body {
+    flex-direction: column;
+  }
+
+  .flow-palette {
+    width: 100%;
+    max-height: 160px;
+  }
+
+  .flow-palette-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .flow-palette-item {
+    flex: 1 1 140px;
+  }
+
+  .step-panel {
+    width: 100%;
+    max-width: none;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    max-height: 420px;
+  }
+}

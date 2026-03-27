@@ -1,0 +1,14 @@
+<header class="header">
+  <div class="header-left">
+    <h1 class="page-title">{{ pageTitle() }}</h1>
+  </div>
+  <div class="header-right">
+    @if (tenantService.currentTenant$ | async; as tid) {
+      <span class="tenant-pill">{{ tid }}</span>
+    }
+    <button type="button" class="icon-btn" aria-label="Notifications">
+      <span class="bell">🔔</span>
+    </button>
+    <button type="button" class="btn btn-primary btn-sm quick-action">Quick run</button>
+  </div>
+</header>

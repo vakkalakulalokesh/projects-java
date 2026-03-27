@@ -1,0 +1,28 @@
+<div class="log-page">
+  <div class="toolbar">
+    <div>
+      <p class="crumb"><a [routerLink]="['/executions', id()]">Execution</a> / logs</p>
+      <h1>Logs</h1>
+      <p class="sub mono">{{ id() }}</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn btn-ghost btn-sm" (click)="clear()">Clear</button>
+      <button type="button" class="btn btn-ghost btn-sm" (click)="togglePause()">
+        {{ paused() ? 'Resume' : 'Pause' }}
+      </button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="download()">Download</button>
+    </div>
+  </div>
+
+  <div class="terminal" #viewport>
+    @for (line of lines(); track $index) {
+      <div class="line">
+        <span class="ts mono">{{ line.timestamp }}</span>
+        <span class="lvl mono" [class]="levelClass(line.level)">{{ line.level }}</span>
+        <span class="msg mono">{{ line.message }}</span>
+      </div>
+    } @empty {
+      <div class="empty mono">Waiting for log lines…</div>
+    }
+  </div>
+</div>

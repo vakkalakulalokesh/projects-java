@@ -1,0 +1,91 @@
+<div class="page-head">
+  <div>
+    <h1>Jobs</h1>
+    <p class="sub">Schedule and manage workloads across your tenant.</p>
+  </div>
+  <a routerLink="/jobs/new" class="btn btn-primary">Create job</a>
+</div>
+
+<div class="toolbar card">
+  <div class="card-body toolbar-inner">
+    <input
+      type="search"
+      class="form-input search"
+      placeholder="Search by name…"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
+    <div class="tabs inline">
+      <button type="button" class="tab" [class.active]="statusTab() === 'ALL'" (click)="setTab('ALL')">All</button>
+      <button type="button" class="tab" [class.active]="statusTab() === 'ACTIVE'" (click)="setTab('ACTIVE')">Active</button>
+      <button type="button" class="tab" [class.active]="statusTab() === 'PAUSED'" (click)="setTab('PAUSED')">Paused</button>
+      <button type="button" class="tab" [class.active]="statusTab() === 'DISABLED'" (click)="setTab('DISABLED')">Disabled</button>
+    </div>
+  </div>
+</div>
+
+<div class="table-wrap" (click)="closeMenu()">
+  <table class="data-table jobs-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Schedule</th>
+        <th>Last run</th>
+        <th>Success</th>
+        <th class="actions-col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (job of filtered(); track job.id) {
+        <tr [routerLink]="['/jobs', job.id, 'edit']">
+          <td>
+            <span class="job-name">{{ job.name }}</span>
+            @if (job.description) {
+              <span class="job-desc">{{ job.description }}</span>
+            }
+          </td>
+          <td>
+            <span class="type-badge" [ngClass]="typeClass(job.jobType)">{{ formatJobType(job.jobType) | titlecase }}</span>
+          </td>
+          <td>
+            <span class="pri-dot-wrap" [attr.title]="job.priority">
+              <span class="pri-dot" [ngClass]="priorityClass(job.priority)"></span>
+              {{ job.priority | titlecase }}
+            </span>
+          </td>
+          <td>
+            <app-status-badge [status]="job.status" />
+          </td>
+          <td><code class="cron">{{ job.cronExpression }}</code></td>
+          <td class="muted">{{ job.lastRunAt | timeAgo: timeTick() }}</td>
+          <td>{{ job.successRate != null ? (job.successRate | number: '1.0-0') + '%' : '—' }}</td>
+          <td class="actions-cell" (click)="$event.stopPropagation()">
+            <div class="menu-wrap">
+              <button type="button" class="btn btn-ghost btn-sm menu-btn" (click)="toggleMenu(job.id, $event)">⋯</button>
+              @if (openMenuId() === job.id) {
+                <div class="menu" (click)="$event.stopPropagation()">
+                  <button type="button" (click)="trigger(job.id, $event)">Trigger</button>
+                  <a [routerLink]="['/jobs', job.id, 'edit']" (click)="closeMenu()">Edit</a>
+                  @if (job.status === 'ACTIVE') {
+                    <button type="button" (click)="pause(job.id, $event)">Pause</button>
+                  }
+                  @if (job.status === 'PAUSED') {
+                    <button type="button" (click)="resume(job.id, $event)">Resume</button>
+                  }
+                  <button type="button" class="danger" (click)="delete(job.id, $event)">Delete</button>
+                </div>
+              }
+            </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="8" class="empty">No jobs match your filters.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

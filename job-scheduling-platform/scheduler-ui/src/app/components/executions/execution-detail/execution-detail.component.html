@@ -1,0 +1,72 @@
+@if (execution(); as ex) {
+  <div class="detail">
+    <div class="page-head">
+      <div>
+        <p class="crumb"><a routerLink="/executions">Executions</a> / {{ ex.id }}</p>
+        <h1>{{ ex.jobName ?? 'Execution' }}</h1>
+        <p class="sub mono">{{ ex.id }}</p>
+      </div>
+      <div class="head-actions">
+        <app-status-badge [status]="ex.status" />
+        <span class="trigger-pill">{{ ex.triggerType }}</span>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="viewLogs()">View logs</button>
+        @if (ex.status === 'FAILED') {
+          <button type="button" class="btn btn-primary btn-sm" (click)="retry()">Retry</button>
+        }
+      </div>
+    </div>
+
+    <div class="stepper card">
+      <div class="card-body">
+        <div class="steps">
+          @for (s of flowSteps; track s.key) {
+            <div class="step" [class]="stepState(s.key, ex)">
+              <div class="dot"></div>
+              <span class="label">{{ s.label }}</span>
+            </div>
+            @if (!$last) {
+              <div class="connector" [class.done]="stepState(s.key, ex) === 'done'"></div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-body">
+          <h2>Timing</h2>
+          <dl class="kv">
+            <dt>Started</dt>
+            <dd class="mono">{{ ex.startedAt ?? '—' }}</dd>
+            <dt>Completed</dt>
+            <dd class="mono">{{ ex.completedAt ?? '—' }}</dd>
+            <dt>Duration</dt>
+            <dd>{{ formatDuration(ex.durationMs) }}</dd>
+            <dt>Worker</dt>
+            <dd class="mono">{{ ex.workerId ?? '—' }}</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <button type="button" class="output-toggle" (click)="toggleOutput()">
+            <span>Output</span>
+            <span class="chev">{{ outputOpen() ? '▼' : '▶' }}</span>
+          </button>
+          @if (outputOpen()) {
+            <pre class="output mono">{{ ex.output || 'No output captured.' }}</pre>
+          }
+          @if (ex.status === 'FAILED' && ex.errorMessage) {
+            <div class="error-panel">
+              <strong>Error</strong>
+              <pre class="mono">{{ ex.errorMessage }}</pre>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <p class="muted">Loading execution…</p>
+}

@@ -1,0 +1,45 @@
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">◇</div>
+    <div class="brand-text">
+      <span class="title">Scheduler</span>
+      <span class="subtitle">Job Platform</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
+      <span class="icon">▣</span>
+      Dashboard
+    </a>
+    <a routerLink="/jobs" routerLinkActive="active" class="nav-link">
+      <span class="icon">◧</span>
+      Jobs
+    </a>
+    <a routerLink="/executions" routerLinkActive="active" class="nav-link">
+      <span class="icon">⏱</span>
+      Executions
+    </a>
+    <a routerLink="/workers" routerLinkActive="active" class="nav-link">
+      <span class="icon">◎</span>
+      Workers
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <label class="tenant-label" for="tenant-select">Tenant</label>
+    @if (tenantService.currentTenant$ | async; as tenantId) {
+      <select
+        id="tenant-select"
+        class="tenant-select"
+        [ngModel]="tenantId"
+        (ngModelChange)="onTenantChange($event)"
+      >
+        @for (t of tenantOptions; track t) {
+          <option [value]="t">{{ t }}</option>
+        }
+      </select>
+      <p class="tenant-hint">Current: {{ tenantId }}</p>
+    }
+  </div>
+</aside>
